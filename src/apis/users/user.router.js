@@ -10,7 +10,7 @@ const route = express.Router();
 // route.put('/:id', UserController.delUser);
 
 route.route('/')
-    .get(UserController.getAll)
+    .get(UserController.getUsers)
     .post( UserController.postUser);
 
 route.route('/:id')

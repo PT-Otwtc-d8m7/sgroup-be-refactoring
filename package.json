@@ -2,6 +2,7 @@
   "name": "sgroup-training-refactoring",
   "version": "1.0.0",
   "main": "index.js",
+ 
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel ./src --out-dir ./build",
@@ -26,6 +27,10 @@
     "prettier": "^3.3.2"
   },
   "dependencies": {
-    "express": "^4.19.2"
+    "body-parser": "^1.20.2",
+    "express": "^4.19.2",
+    "mysql2": "^3.10.1"
   }
 }
+
+
