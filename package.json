@@ -2,11 +2,10 @@
   "name": "sgroup-training-refactoring",
   "version": "1.0.0",
   "main": "index.js",
- 
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel ./src --out-dir ./build",
-    "start": "nodemon --exec babel-node src/index.js",
+    "start": "nodemon --exec babel-node src/ index.js",
     "lint": "eslint ."
   },
   "author": "",
@@ -27,10 +26,11 @@
     "prettier": "^3.3.2"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.10.1"
   }
 }
-
-

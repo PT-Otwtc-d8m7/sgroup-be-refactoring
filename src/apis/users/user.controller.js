@@ -15,17 +15,23 @@ class UserController {
         }
     }
     
-    getDetail(req, res, next){
-        const users = UserService.getUsers();
-        const index = users.findIndex(user => user.id === parseInt(req.params.id));
-        
-        if(index == -1){
-            res.send("The id does not exist!");
-            return;
-        }
-
-        const detailUser = users.find(user => user.id === parseInt(req.params.id));
-        return res.send(detailUser);        
+    async getDetail(req, res, next){
+        try {
+            const users = await UserService.getUsers();
+            const index = users.findIndex(user => user.id === parseInt(req.params.id));
+            if(index == -1){
+                res.send("The id does not exist!");
+                return;
+            }
+            const detailUser = users.find(user => user.id === parseInt(req.params.id));
+            return res.status(200).send(detailUser);
+        } catch(error) {
+            console.log("🚀 ~ UserController ~ getUsers ~ error:", error)
+            return res.status(500).json({
+                success: false,
+                message: "Internal Server Error"
+            })
+        } 
     }
 
     async postUser(req, res, next){
