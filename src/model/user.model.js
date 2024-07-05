@@ -2,15 +2,6 @@
 import pool from '../database/database.config';
 
 class UserModel {
-    // constructor(id, name, email, password, gender, age) {
-    //     this.id = id;
-    //     this.name = name;
-    //     this.email = email;
-    //     this.password = password;
-    //     this.gender = gender;
-    //     this.age = age;
-    // }
-
     async getAllUsers() {
         try {
             const connection = await pool.getConnection();
@@ -18,6 +9,29 @@ class UserModel {
             connection.release();
             return rows;
         } catch (error) {
+            console.log("🚀 ~ UserModel ~ getAllUsers ~ error:", error)
+            console.error('Error executing query:', error);
+            throw error;
+        }
+    }
+
+    async getUserByEmail(email) {
+        try {
+            const connection = await pool.getConnection();
+            const query = `
+                SELECT * FROM user WHERE email = ?
+            `;
+            const values = [email];
+            const [row, fields] = await connection.query(query, values);
+            connection.release();
+            if (row.length > 0) {
+                console.log("User found: ", row[0]);
+                return row[0];
+            } else {
+                console.log("No user found with the email: ", email);
+                return null;
+            }
+        }catch(error) {
             console.log("🚀 ~ UserModel ~ getAllUsers ~ error:", error)
             console.error('Error executing query:', error);
             throw error;
@@ -40,11 +54,11 @@ class UserModel {
         try {
             const connection = await pool.getConnection();
             const query = `
-                INSERT INTO user (id, name, email, password, gender, age)
-                VALUES (?, ?, ?, ?, ?, ?)
+                INSERT INTO user (id, name, email, password, gender, age, salt)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
             `;
-            const { id, name, email, password, gender, age } = user;
-            const values = [id, name, email, password, gender, age];
+            const { id, name, email, password, gender, age, salt } = user;
+            const values = [id, name, email, password, gender, age, salt];
             await connection.query(query, values);
             connection.release();
             return { success: true, message: 'User created successfully' };
@@ -84,6 +98,17 @@ class UserModel {
             throw error;
         }
     }
+
+    async query(queryString, params) {
+        try {
+            const connection = await pool.getConnection();
+            return await connection.query(queryString, params);
+        } catch (error) {
+          throw error;
+        }
+      }
+
+
 }
 
 export default UserModel;
