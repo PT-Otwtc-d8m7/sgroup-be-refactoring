@@ -24,7 +24,6 @@ class UserModel {
             const values = [email];
             const [row, fields] = await connection.query(query, values);
             connection.release();
-            console.log("user = ", row);
             if (row.length > 0) {
                 console.log("User found: ", row[0]);
                 return row[0];
@@ -99,6 +98,17 @@ class UserModel {
             throw error;
         }
     }
+
+    async query(queryString, params) {
+        try {
+            const connection = await pool.getConnection();
+            return await connection.query(queryString, params);
+        } catch (error) {
+          throw error;
+        }
+      }
+
+
 }
 
 export default UserModel;

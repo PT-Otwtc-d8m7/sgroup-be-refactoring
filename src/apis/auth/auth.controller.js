@@ -16,7 +16,6 @@ class AuthController {
             // Gọi dịch vụ đăng nhập để lấy thông tin người dùng
             const user = await authService.login(username);
             console.log(user);
-            
             if (!user) {
                 return res.status(401).json({
                     success: false,
@@ -39,6 +38,8 @@ class AuthController {
                 const token = sign({ id: user.id, email: user.email }, secretKey, {
                     expiresIn: process.env.JWT_EXPIRES_IN
                 });
+                const expiration = new Date(Date.now() + 10*60*1000);
+                
     
                 return res.status(200).json({
                     success: true,
@@ -102,6 +103,46 @@ class AuthController {
             });
         }
     }
+    
+    async forgotPassword(req, res, next) {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ error: 'Email is required' });
+        }
+
+        try {
+            const result = await authService.handleForgotPassword(email);
+            if (result.success) {
+            return res.status(200).json({ message: 'Email sent successfully' });
+            } else {
+            return res.status(400).json({ error: result.message });
+            }
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+
+    async resetPassword(req, res, next) {
+        const { email, passwordResetToken, newPassword } = req.body;
+      
+        if (!email || !passwordResetToken || !newPassword) {
+          return res.status(400).json({ error: 'Email, token and new password are required' });
+        }
+      
+        try {
+          const result = await authService.handleResetPassword(email, passwordResetToken, newPassword);
+          if (result.success) {
+            return res.status(200).json({ message: 'Password reset successfully' });
+          } else {
+            return res.status(400).json({ error: result.message });
+          }
+        } catch (err) {
+          console.error(err);
+          return res.status(500).json({ error: 'Internal server error' });
+        }
+      };
 
     async getMe(req, res) {
         try {
